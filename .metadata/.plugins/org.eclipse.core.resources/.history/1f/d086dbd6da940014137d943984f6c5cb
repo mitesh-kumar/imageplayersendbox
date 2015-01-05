@@ -6,5 +6,5 @@
    <%=image_tag image["url"]%>
    <%=image["title"]%>
 </li>
-<%}%>
+}
 </ul>
