@@ -1,10 +1,45 @@
-<h1>Store#index</h1>
-<p>Find me in app/views/store/index.html.erb</p>
+<% if notice %>
+	<p id="notice"><%= notice %></p>
+<% end %>
+<h1>Your image list</h1>
+<div id="content" class="content">
 <ul>
 <% @response["items"].each{ |image| %>
-<li> 
-   <%=image_tag image["url"]%>
-   <%=image["title"]%>
-</li>
+	<div class="entry" >
+	    <%=image_tag image["url"]%>
+	    <%= sanitize(image["title"]).first(80)%>
+	</div>
 <%}%>
 </ul>
+</div>
+<div style="display:none;" class="nav_up" id="nav_up"></div>
+		<div style="display:none;" class="nav_down" id="nav_down"></div>
+        
+		<script src="jquery-1.3.2.js" type="text/javascript"></script>
+		<script src="scroll-startstop.events.jquery.js" type="text/javascript"></script>
+		<script>
+			$(function() {
+				var $elem = $('#content');
+				
+				$('#nav_up').fadeIn('slow');
+				$('#nav_down').fadeIn('slow');  
+				
+				$(window).bind('scrollstart', function(){
+					$('#nav_up,#nav_down').stop().animate({'opacity':'0.2'});
+				});
+				$(window).bind('scrollstop', function(){
+					$('#nav_up,#nav_down').stop().animate({'opacity':'1'});
+				});
+				
+				$('#nav_down').click(
+					function (e) {
+						$('html, body').animate({scrollTop: $elem.height()}, 800);
+					}
+				);
+				$('#nav_up').click(
+					function (e) {
+						$('html, body').animate({scrollTop: '0px'}, 800);
+					}
+				);
+            });
+        </script>
