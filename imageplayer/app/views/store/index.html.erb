@@ -3,17 +3,22 @@
 <% end %>
 <h1>Your image list</h1>
 <div id="content" class="content">
-<ul>
-<% @response["items"].each{ |image| %>
-	<div class="entry" >
-	    <%=image_tag image["url"]%>
-	    <%= sanitize(image["title"]).first(80)%>
-	</div>
-<%}%>
-</ul>
+	<div data-role="page"> 
+    <div data-role="content">
+            <ul data-role="listview" data-inset="true" id="swipedelete">
+               <% @response["items"].each{ |image| %>
+				<div class="entry" >
+				    <li><a><%=image_tag image["url"]%>
+				    <%= sanitize(image["title"]).first(80)%></a></li>
+				</div>
+				<%}%>
+            </ul>
+    </div> 
+</div> 
+
 </div>
 <div style="display:none;" class="nav_up" id="nav_up"></div>
-		<div style="display:none;" class="nav_down" id="nav_down"></div>
+<div style="display:none;" class="nav_down" id="nav_down"></div>
         
 		<script src="jquery-1.3.2.js" type="text/javascript"></script>
 		<script src="scroll-startstop.events.jquery.js" type="text/javascript"></script>
@@ -42,4 +47,45 @@
 					}
 				);
             });
+        </script>
+        <script>
+	        var onswipe = false;
+			//$( '#swipedelete li' ).live( 'swiperight',function(){ 
+			// changed to click to test on desktop browser
+			$( '#swipedelete li' ).live( 'click',function(){ 
+			// change click to swiperight to test swipe
+			    if(!onswipe){
+			        onswipe = true;
+			        
+			        var li;    
+			        var html = '<li class="delete-controls"><button type="button" class="btncancel ui-btn-corner-all ui-btn-up-c" data-role="button" data-theme="c">Cancel</button>&nbsp;<button type="button" class="btndelete ui-btn-corner-all ui-btn-up-e" data-role="button" data-theme="e">Delete</button></li>';
+			        $(this).after(html);
+			        li = $(this).detach();    
+			        $("ul[id='swipedelete']").listview("refresh");
+			        
+			        $(".delete-controls").unbind("tap click");
+			        $(".delete-controls .btndelete").click(function(e){
+			            //alert("Click on delete");
+			            if(!confirm("Are you sure you want to delete this item?")){        
+			                $(".delete-controls").before(li);
+			                $(".delete-controls").remove();
+			            } else{
+			                $(".delete-controls").remove();
+			            }
+			            
+			            onswipe = false;
+			            $("ul[id='swipedelete']").listview("refresh");
+			        });
+			        
+			        $(".delete-controls .btncancel").click(function(e){
+			            //alert("Click on cancel");
+			            $(".delete-controls").before(li);
+			            $(".delete-controls").remove();
+			            
+			            onswipe = false;
+			            $("ul[id='swipedelete']").listview("refresh");
+			        });        
+			        
+			    }
+			});
         </script>
